@@ -1151,8 +1151,12 @@ function renderBeneficiaries() {
                     <p class="beneficiary-nickname">${beneficiary.nickname || 'No nickname'}</p>
                 </div>
                 <div class="beneficiary-actions">
-                    <button class="icon-btn" onclick="editBeneficiary(${beneficiary.id})" title="Edit">✏️</button>
-                    <button class="icon-btn" onclick="deleteBeneficiary(${beneficiary.id})" title="Delete">🗑️</button>
+                    <button class="icon-btn" onclick="editBeneficiary(${beneficiary.id})" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="icon-btn" onclick="deleteBeneficiary(${beneficiary.id})" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </div>
             </div>
             <div class="beneficiary-details">
