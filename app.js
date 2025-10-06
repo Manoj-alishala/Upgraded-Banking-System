@@ -5,13 +5,6 @@ let transactions = [];
 let filteredTransactions = [];
 let pendingTransfer = null;
 
-// Login Credentials
-const LOGIN_CREDENTIALS = {
-    customerId: "123456",
-    pin: "1234",
-    transferPassword: "mypassword123"
-};
-
 // DOM Elements
 const loginPage = document.getElementById('loginPage');
 const mainApp = document.getElementById('mainApp');
@@ -26,41 +19,35 @@ const loadingOverlay = document.getElementById('loadingOverlay');
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing app...');
     initializeApp();
     setupEventListeners();
 });
 
 function initializeApp() {
-    console.log('Initializing app...');
     // Load mock data
     loadMockData();
     
-    // Always start with login page
+    // Always start with login page for demo
     showLoginPage();
-    
-    console.log('App initialized successfully');
 }
 
 function loadMockData() {
-    console.log('Loading mock data...');
-    
     // Load user account data
     currentUser = {
         accountNumber: "1234567890123456",
         accountHolderName: "Mittapalli Yashaswini", 
-        email: "yashaswini@example.com",
-        phone: "+91 9876543210",
-        address: "123 Main Street, Hyderabad, Telangana 500001",
+        email: "mittapalliyashaswini@gmail.com",
+        phone: "+91 8341407986",
+        address: "123 Main Street, Kazipet, Telangana 500003",
         ifscCode: "HDFC0001234",
-        branchName: "Delhi Main Branch",
+        branchName: "Hanamkonda Main Branch",
         accountType: "Savings Account",
         balance: 458299.50,
         availableBalance: 458299.50,
         accountStatus: "Active"
     };
 
-    // Load beneficiaries
+    // Load beneficiaries including the new Thrushitha
     beneficiaries = [
         {
             id: 1,
@@ -96,7 +83,7 @@ function loadMockData() {
             ifscCode: "SBIK000222",
             bankName: "State Bank of India",
             branch: "Chennai Branch",
-            nickname: "Colleague"
+            nickname: "Cousin"
         },
         {
             id: 5,
@@ -106,11 +93,11 @@ function loadMockData() {
             bankName: "Kotak Mahindra Bank",
             branch: "Chennai Branch",
             nickname: "Colleague"
-        }
+        },
     ];
 
-    // Load transactions - using the exact data provided
-    const transactions = [
+    // Load the full 33-item transaction history
+    transactions = [
         {
             id: 1,
             date: "2025-10-06",
@@ -156,7 +143,6 @@ function loadMockData() {
             balance: 394598.50,
             reference: "INT202510020001"
         },
-        // September
         {
             id: 6,
             date: "2025-09-06",
@@ -193,7 +179,6 @@ function loadMockData() {
             balance: 311498.75,
             reference: "INT202509020001"
         },
-        // August
         {
             id: 10,
             date: "2025-08-06",
@@ -221,7 +206,6 @@ function loadMockData() {
             balance: 228300.50,
             reference: "INT202508020001"
         },
-        // July
         {
             id: 13,
             date: "2025-07-06",
@@ -249,7 +233,6 @@ function loadMockData() {
             balance: 143680.20,
             reference: "INT202507020001"
         },
-        // June
         {
             id: 16,
             date: "2025-06-06",
@@ -277,7 +260,6 @@ function loadMockData() {
             balance: 59624.70,
             reference: "INT202506020001"
         },
-        // May
         {
             id: 19,
             date: "2025-05-06",
@@ -305,7 +287,6 @@ function loadMockData() {
             balance: -23268.10,
             reference: "INT202505020001"
         },
-        // April
         {
             id: 22,
             date: "2025-04-06",
@@ -333,7 +314,6 @@ function loadMockData() {
             balance: -108282.60,
             reference: "INT202504020001"
         },
-        // March
         {
             id: 25,
             date: "2025-03-06",
@@ -361,7 +341,6 @@ function loadMockData() {
             balance: -192973.20,
             reference: "INT202503020001"
         },
-        // February
         {
             id: 28,
             date: "2025-02-06",
@@ -389,7 +368,6 @@ function loadMockData() {
             balance: -276752.30,
             reference: "INT202502020001"
         },
-        // January
         {
             id: 31,
             date: "2025-01-06",
@@ -419,35 +397,20 @@ function loadMockData() {
         }
     ];
 
-
     filteredTransactions = [...transactions];
-    
-    console.log('Mock data loaded successfully');
-    console.log('Beneficiaries loaded:', beneficiaries.length);
 }
 
 function setupEventListeners() {
-    console.log('Setting up event listeners...');
-    
-    // Login form - CRITICAL: Make sure this event listener is attached correctly
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-        console.log('Login form event listener attached');
-    } else {
-        console.error('Login form not found!');
-    }
+    // Login form
+    loginForm.addEventListener('submit', handleLogin);
     
     // Logout
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
+    logoutBtn.addEventListener('click', handleLogout);
     
     // Navigation
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            e.preventDefault();
             const page = e.currentTarget.getAttribute('data-page');
-            console.log('Navigating to page:', page);
             navigateToPage(page);
         });
     });
@@ -455,7 +418,6 @@ function setupEventListeners() {
     // Quick action buttons
     document.querySelectorAll('.action-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            e.preventDefault();
             const page = e.currentTarget.getAttribute('data-page');
             navigateToPage(page);
         });
@@ -475,19 +437,14 @@ function setupEventListeners() {
     
     // Modal handlers
     setupModalEventListeners();
-    
-    console.log('Event listeners setup completed');
 }
 
 // Login/Logout Functions
 function handleLogin(e) {
-    console.log('Login form submitted');
     e.preventDefault();
     
     const customerId = document.getElementById('customerId').value.trim();
     const pin = document.getElementById('pin').value.trim();
-    
-    console.log('Login attempt with Customer ID:', customerId, 'PIN:', pin);
     
     // Clear previous errors
     clearFormErrors();
@@ -498,7 +455,7 @@ function handleLogin(e) {
     if (!customerId) {
         showFieldError('customerIdError', 'Customer ID is required');
         hasErrors = true;
-    } else if (customerId !== LOGIN_CREDENTIALS.customerId) {
+    } else if (customerId !== '123456') {
         showFieldError('customerIdError', 'Invalid Customer ID. Use 123456 for demo.');
         hasErrors = true;
     }
@@ -509,40 +466,31 @@ function handleLogin(e) {
     } else if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
         showFieldError('pinError', 'PIN must be 4 digits');
         hasErrors = true;
-    } else if (pin !== LOGIN_CREDENTIALS.pin) {
+    } else if (pin !== '1234') {
         showFieldError('pinError', 'Invalid PIN. Use 1234 for demo.');
         hasErrors = true;
     }
     
-    if (hasErrors) {
-        console.log('Login validation failed');
-        return;
-    }
-    
-    console.log('Login validation passed, showing loading...');
+    if (hasErrors) return;
     
     // Show loading
     showLoading();
     
     // Simulate API call
     setTimeout(() => {
-        console.log('Processing login...');
         hideLoading();
         
-        // Check credentials exactly
-        if (customerId === LOGIN_CREDENTIALS.customerId && pin === LOGIN_CREDENTIALS.pin) {
-            console.log('Login successful!');
+        // Check both Customer ID and PIN
+        if (customerId === '123456' && pin === '1234') {
             showMainApp();
             showNotification('Login successful! Welcome to OneBank.', 'success');
         } else {
-            console.log('Login failed - invalid credentials');
             showFieldError('pinError', 'Invalid credentials. Use Customer ID: 123456 and PIN: 1234');
         }
     }, 1000);
 }
 
 function handleLogout() {
-    console.log('Logging out...');
     showLoginPage();
     // Reset form
     loginForm.reset();
@@ -551,7 +499,6 @@ function handleLogout() {
 }
 
 function showLoginPage() {
-    console.log('Showing login page');
     loginPage.classList.add('active');
     loginPage.classList.remove('hidden');
     mainApp.classList.add('hidden');
@@ -559,14 +506,14 @@ function showLoginPage() {
 }
 
 function showMainApp() {
-    console.log('Showing main app');
     loginPage.classList.remove('active');
     loginPage.classList.add('hidden');
     mainApp.classList.remove('hidden');
     mainApp.classList.add('active');
     
-    // Initialize dashboard data
+    // Initialize dashboard
     populateRecentTransactions();
+    populateBeneficiarySelect();
     renderBeneficiaries();
     renderTransactionsTable();
     updateStatementsSummary();
@@ -575,22 +522,12 @@ function showMainApp() {
     // Set default date range for statements
     setDefaultDateRange();
     
-    // CRITICAL FIX: Populate beneficiary select immediately after main app is shown
-    setTimeout(() => {
-        populateBeneficiarySelect();
-        console.log('Beneficiary select populated after main app load');
-    }, 100);
-    
     // Navigate to dashboard
     navigateToPage('dashboard');
-    
-    console.log('Main app initialized');
 }
 
 // Navigation Functions
 function navigateToPage(pageName) {
-    console.log('Navigating to page:', pageName);
-    
     // Update navigation
     navItems.forEach(item => {
         item.classList.toggle('active', item.getAttribute('data-page') === pageName);
@@ -621,11 +558,7 @@ function navigateToPage(pageName) {
             renderBeneficiaries();
             break;
         case 'transfers':
-            // CRITICAL FIX: Always populate beneficiary select when navigating to transfers
-            setTimeout(() => {
-                populateBeneficiarySelect();
-                console.log('Beneficiary select populated on transfers page navigation');
-            }, 50);
+            populateBeneficiarySelect();
             break;
     }
 }
@@ -636,8 +569,7 @@ function updateBreadcrumbs(pageName) {
         'profile': 'Profile Management',
         'statements': 'Account Statements',
         'transfers': 'Money Transfer',
-        'beneficiaries': 'Manage Beneficiaries',
-        'success': 'Transfer Successful'
+        'beneficiaries': 'Manage Beneficiaries'
     };
     
     breadcrumbs.innerHTML = `
@@ -672,30 +604,31 @@ function setupProfileEventListeners() {
     });
     
     // Edit profile
-    const editBtn = document.getElementById('editProfileBtn');
-    const cancelBtn = document.getElementById('cancelEditBtn');
-    const profileForm = document.getElementById('profileForm');
-    const uploadBtn = document.getElementById('uploadPicBtn');
-    const changePassBtn = document.getElementById('changePasswordBtn');
-    const prefForm = document.getElementById('preferencesForm');
+    document.getElementById('editProfileBtn').addEventListener('click', enableProfileEdit);
+    document.getElementById('cancelEditBtn').addEventListener('click', cancelProfileEdit);
+    document.getElementById('profileForm').addEventListener('submit', saveProfile);
     
-    if (editBtn) editBtn.addEventListener('click', enableProfileEdit);
-    if (cancelBtn) cancelBtn.addEventListener('click', cancelProfileEdit);
-    if (profileForm) profileForm.addEventListener('submit', saveProfile);
-    if (uploadBtn) uploadBtn.addEventListener('click', () => {
+    // Upload picture simulation
+    document.getElementById('uploadPicBtn').addEventListener('click', () => {
         showNotification('Profile picture upload feature coming soon!', 'info');
     });
-    if (changePassBtn) changePassBtn.addEventListener('click', () => {
+    
+    // Change password
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
         showModal('changePasswordModal');
     });
-    if (prefForm) prefForm.addEventListener('submit', savePreferences);
+    
+    // Preferences form
+    document.getElementById('preferencesForm').addEventListener('submit', savePreferences);
 }
 
 function switchProfileTab(tabName) {
+    // Update tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
     });
     
+    // Update tab content
     document.querySelectorAll('.tab-content').forEach(content => {
         if (content.id === tabName + 'Tab') {
             content.classList.add('active');
@@ -711,63 +644,53 @@ function enableProfileEdit() {
     const formElements = ['fullName', 'email', 'phone', 'address'];
     formElements.forEach(id => {
         const element = document.getElementById(id);
-        if (element) element.removeAttribute('readonly');
+        element.removeAttribute('readonly');
     });
     
-    const editBtn = document.getElementById('editProfileBtn');
-    const actions = document.getElementById('profileFormActions');
-    if (editBtn) editBtn.classList.add('hidden');
-    if (actions) actions.classList.remove('hidden');
+    document.getElementById('editProfileBtn').classList.add('hidden');
+    document.getElementById('profileFormActions').classList.remove('hidden');
 }
 
 function cancelProfileEdit() {
     const formElements = ['fullName', 'email', 'phone', 'address'];
     formElements.forEach(id => {
         const element = document.getElementById(id);
-        if (element) {
-            element.setAttribute('readonly', true);
-            // Reset to original values
-            switch(id) {
-                case 'fullName':
-                    element.value = currentUser.accountHolderName;
-                    break;
-                case 'email':
-                    element.value = currentUser.email;
-                    break;
-                case 'phone':
-                    element.value = currentUser.phone;
-                    break;
-                case 'address':
-                    element.value = currentUser.address;
-                    break;
-            }
+        element.setAttribute('readonly', true);
+        // Reset to original values
+        switch(id) {
+            case 'fullName':
+                element.value = currentUser.accountHolderName;
+                break;
+            case 'email':
+                element.value = currentUser.email;
+                break;
+            case 'phone':
+                element.value = currentUser.phone;
+                break;
+            case 'address':
+                element.value = currentUser.address;
+                break;
         }
     });
     
-    const editBtn = document.getElementById('editProfileBtn');
-    const actions = document.getElementById('profileFormActions');
-    if (editBtn) editBtn.classList.remove('hidden');
-    if (actions) actions.classList.add('hidden');
+    document.getElementById('editProfileBtn').classList.remove('hidden');
+    document.getElementById('profileFormActions').classList.add('hidden');
 }
 
 function saveProfile(e) {
     e.preventDefault();
+    
     showLoading();
     
     setTimeout(() => {
         // Update user data
-        const fullName = document.getElementById('fullName');
-        const email = document.getElementById('email');
-        const phone = document.getElementById('phone');
-        const address = document.getElementById('address');
-        
-        if (fullName) currentUser.accountHolderName = fullName.value;
-        if (email) currentUser.email = email.value;
-        if (phone) currentUser.phone = phone.value;
-        if (address) currentUser.address = address.value;
+        currentUser.accountHolderName = document.getElementById('fullName').value;
+        currentUser.email = document.getElementById('email').value;
+        currentUser.phone = document.getElementById('phone').value;
+        currentUser.address = document.getElementById('address').value;
         
         // Update UI
-        if (userName) userName.textContent = currentUser.accountHolderName;
+        userName.textContent = currentUser.accountHolderName;
         
         // Disable editing
         cancelProfileEdit();
@@ -779,6 +702,7 @@ function saveProfile(e) {
 
 function savePreferences(e) {
     e.preventDefault();
+    
     showLoading();
     
     setTimeout(() => {
@@ -789,24 +713,18 @@ function savePreferences(e) {
 
 // Statements Functions
 function setupStatementsEventListeners() {
-    const applyBtn = document.getElementById('applyFiltersBtn');
-    const resetBtn = document.getElementById('resetFiltersBtn');
-    const searchInput = document.getElementById('transactionSearch');
-    const sortSelect = document.getElementById('sortBy');
-    const periodSelect = document.getElementById('statementPeriod');
-    
-    if (applyBtn) applyBtn.addEventListener('click', applyFilters);
-    if (resetBtn) resetBtn.addEventListener('click', resetFilters);
-    if (searchInput) searchInput.addEventListener('input', searchTransactions);
-    if (sortSelect) sortSelect.addEventListener('change', sortTransactions);
-    if (periodSelect) periodSelect.addEventListener('change', handlePeriodChange);
+    document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+    document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+    document.getElementById('transactionSearch').addEventListener('input', searchTransactions);
+    document.getElementById('sortBy').addEventListener('change', sortTransactions);
     
     // Export buttons
-    const pdfBtn = document.getElementById('downloadPdfBtn');
-    const excelBtn = document.getElementById('exportExcelBtn');
+    document.getElementById('downloadPdfBtn').addEventListener('click', () => downloadStatement('pdf'));
+    document.getElementById('exportExcelBtn').addEventListener('click', () => downloadStatement('excel'));
+    document.getElementById('exportCsvBtn').addEventListener('click', () => downloadStatement('csv'));
     
-    if (pdfBtn) pdfBtn.addEventListener('click', () => downloadStatement('pdf'));
-    if (excelBtn) excelBtn.addEventListener('click', () => downloadStatement('excel'));
+    // Period selector
+    document.getElementById('statementPeriod').addEventListener('change', handlePeriodChange);
 }
 
 function setDefaultDateRange() {
@@ -814,11 +732,8 @@ function setDefaultDateRange() {
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(today.getMonth() - 1);
     
-    const fromDate = document.getElementById('fromDate');
-    const toDate = document.getElementById('toDate');
-    
-    if (fromDate) fromDate.value = oneMonthAgo.toISOString().split('T')[0];
-    if (toDate) toDate.value = today.toISOString().split('T')[0];
+    document.getElementById('fromDate').value = oneMonthAgo.toISOString().split('T')[0];
+    document.getElementById('toDate').value = today.toISOString().split('T')[0];
 }
 
 function handlePeriodChange() {
@@ -826,7 +741,7 @@ function handlePeriodChange() {
     const fromDate = document.getElementById('fromDate');
     const toDate = document.getElementById('toDate');
     
-    if (period !== 'custom' && fromDate && toDate) {
+    if (period !== 'custom') {
         const today = new Date();
         let startDate = new Date();
         
@@ -853,17 +768,11 @@ function handlePeriodChange() {
 function applyFilters() {
     let filtered = [...transactions];
     
-    const fromDateEl = document.getElementById('fromDate');
-    const toDateEl = document.getElementById('toDate');
-    const typeEl = document.getElementById('transactionType');
-    const minAmountEl = document.getElementById('minAmount');
-    const maxAmountEl = document.getElementById('maxAmount');
-    
-    const fromDate = fromDateEl ? fromDateEl.value : '';
-    const toDate = toDateEl ? toDateEl.value : '';
-    const transactionType = typeEl ? typeEl.value : '';
-    const minAmount = minAmountEl ? parseFloat(minAmountEl.value) || 0 : 0;
-    const maxAmount = maxAmountEl ? parseFloat(maxAmountEl.value) || Infinity : Infinity;
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+    const transactionType = document.getElementById('transactionType').value;
+    const minAmount = parseFloat(document.getElementById('minAmount').value) || 0;
+    const maxAmount = parseFloat(document.getElementById('maxAmount').value) || Infinity;
     
     // Filter by date range
     if (fromDate) {
@@ -892,18 +801,13 @@ function applyFilters() {
 }
 
 function resetFilters() {
-    const elements = [
-        'statementPeriod', 'fromDate', 'toDate', 'transactionType', 
-        'minAmount', 'maxAmount', 'transactionSearch'
-    ];
-    
-    elements.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-    });
-    
-    const periodEl = document.getElementById('statementPeriod');
-    if (periodEl) periodEl.value = '1month';
+    document.getElementById('statementPeriod').value = '1month';
+    document.getElementById('fromDate').value = '';
+    document.getElementById('toDate').value = '';
+    document.getElementById('transactionType').value = '';
+    document.getElementById('minAmount').value = '';
+    document.getElementById('maxAmount').value = '';
+    document.getElementById('transactionSearch').value = '';
     
     filteredTransactions = [...transactions];
     renderTransactionsTable();
@@ -914,8 +818,7 @@ function resetFilters() {
 }
 
 function searchTransactions() {
-    const searchEl = document.getElementById('transactionSearch');
-    const searchTerm = searchEl ? searchEl.value.toLowerCase() : '';
+    const searchTerm = document.getElementById('transactionSearch').value.toLowerCase();
     
     if (!searchTerm) {
         filteredTransactions = [...transactions];
@@ -931,8 +834,7 @@ function searchTransactions() {
 }
 
 function sortTransactions() {
-    const sortEl = document.getElementById('sortBy');
-    const sortBy = sortEl ? sortEl.value : 'date-desc';
+    const sortBy = document.getElementById('sortBy').value;
     
     filteredTransactions.sort((a, b) => {
         switch(sortBy) {
@@ -954,7 +856,6 @@ function sortTransactions() {
 
 function renderTransactionsTable() {
     const tbody = document.getElementById('transactionsTableBody');
-    if (!tbody) return;
     
     if (filteredTransactions.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No transactions found</td></tr>';
@@ -981,15 +882,10 @@ function updateStatementsSummary() {
     const totalDebits = debits.reduce((sum, t) => sum + Math.abs(t.amount), 0);
     const netAmount = totalCredits - totalDebits;
     
-    const creditsEl = document.getElementById('totalCreditsSum');
-    const debitsEl = document.getElementById('totalDebitsSum');
-    const netEl = document.getElementById('netAmount');
-    const countEl = document.getElementById('transactionCount');
-    
-    if (creditsEl) creditsEl.textContent = formatCurrency(totalCredits);
-    if (debitsEl) debitsEl.textContent = formatCurrency(totalDebits);
-    if (netEl) netEl.textContent = formatCurrency(netAmount);
-    if (countEl) countEl.textContent = filteredTransactions.length;
+    document.getElementById('totalCreditsSum').textContent = formatCurrency(totalCredits);
+    document.getElementById('totalDebitsSum').textContent = formatCurrency(totalDebits);
+    document.getElementById('netAmount').textContent = formatCurrency(netAmount);
+    document.getElementById('transactionCount').textContent = filteredTransactions.length;
 }
 
 function downloadStatement(format) {
@@ -1012,15 +908,11 @@ function setupTransfersEventListeners() {
     });
     
     // Transfer forms
-    const existingForm = document.getElementById('existingTransferForm');
-    const newForm = document.getElementById('newTransferForm');
+    document.getElementById('existingTransferForm').addEventListener('submit', handleExistingTransfer);
+    document.getElementById('newTransferForm').addEventListener('submit', handleNewTransfer);
     
-    if (existingForm) existingForm.addEventListener('submit', handleExistingTransfer);
-    if (newForm) newForm.addEventListener('submit', handleNewTransfer);
-    
-    // Transfer password confirmation
-    const confirmBtn = document.getElementById('confirmTransferBtn');
-    if (confirmBtn) confirmBtn.addEventListener('click', confirmTransfer);
+    // Transfer password form
+    document.getElementById('transferPasswordForm').addEventListener('submit', handleTransferPasswordSubmit);
 }
 
 function switchTransferOption(option) {
@@ -1039,61 +931,22 @@ function switchTransferOption(option) {
             container.classList.add('hidden');
         }
     });
-    
-    // Re-populate beneficiary select when switching to existing transfer
-    if (option === 'existing') {
-        setTimeout(() => {
-            populateBeneficiarySelect();
-            console.log('Beneficiary select populated after switching to existing transfer');
-        }, 50);
-    }
 }
 
 function populateBeneficiarySelect() {
     const select = document.getElementById('beneficiarySelect');
-    console.log('Attempting to populate beneficiary select...');
-    console.log('Select element found:', !!select);
-    console.log('Number of beneficiaries:', beneficiaries.length);
     
-    if (!select) {
-        console.error('Beneficiary select element not found!');
-        return;
-    }
-    
-    if (beneficiaries.length === 0) {
-        console.warn('No beneficiaries to populate');
-        select.innerHTML = '<option value="">No beneficiaries found</option>';
-        return;
-    }
-    
-    // Clear and populate select options
-    select.innerHTML = '<option value="">Choose beneficiary...</option>';
-    
-    beneficiaries.forEach(beneficiary => {
-        const option = document.createElement('option');
-        option.value = beneficiary.id;
-        option.textContent = `${beneficiary.name} (${beneficiary.nickname})`;
-        select.appendChild(option);
-    });
-    
-    console.log('Beneficiary select populated with', beneficiaries.length, 'options');
-    console.log('Select innerHTML after population:', select.innerHTML.substring(0, 100) + '...');
+    select.innerHTML = '<option value="">Choose beneficiary...</option>' +
+        beneficiaries.map(b => `<option value="${b.id}">${b.name} (${b.nickname})</option>`).join('');
 }
 
 function handleExistingTransfer(e) {
     e.preventDefault();
     
-    const beneficiaryIdEl = document.getElementById('beneficiarySelect');
-    const amountEl = document.getElementById('existingAmount');
-    const modeEl = document.getElementById('existingTransferMode');
-    const remarksEl = document.getElementById('existingRemarks');
-    
-    const beneficiaryId = beneficiaryIdEl ? beneficiaryIdEl.value : '';
-    const amount = amountEl ? parseFloat(amountEl.value) : 0;
-    const mode = modeEl ? modeEl.value : '';
-    const remarks = remarksEl ? remarksEl.value : '';
-    
-    console.log('Transfer attempt - Beneficiary ID:', beneficiaryId, 'Amount:', amount);
+    const beneficiaryId = document.getElementById('beneficiarySelect').value;
+    const amount = parseFloat(document.getElementById('existingAmount').value);
+    const mode = document.getElementById('existingTransferMode').value;
+    const remarks = document.getElementById('existingRemarks').value;
     
     if (!beneficiaryId || !amount || amount <= 0) {
         showNotification('Please fill all required fields', 'error');
@@ -1106,44 +959,30 @@ function handleExistingTransfer(e) {
     }
     
     const beneficiary = beneficiaries.find(b => b.id == beneficiaryId);
-    if (!beneficiary) {
-        showNotification('Beneficiary not found', 'error');
-        return;
-    }
     
-    // Store transfer details
+    // Store transfer details for password verification
     pendingTransfer = {
         type: 'existing',
-        amount,
+        amount: amount,
         recipient: beneficiary,
-        mode,
-        remarks
+        mode: mode,
+        remarks: remarks
     };
     
-    // Show transfer confirmation modal
-    showTransferConfirmation();
+    showTransferPasswordModal(amount, beneficiary, mode, remarks);
 }
 
 function handleNewTransfer(e) {
     e.preventDefault();
     
-    const nameEl = document.getElementById('newBeneficiaryName');
-    const accountEl = document.getElementById('newAccountNumber');
-    const ifscEl = document.getElementById('newIfscCode');
-    const bankEl = document.getElementById('newBankName');
-    const amountEl = document.getElementById('newAmount');
-    const modeEl = document.getElementById('newTransferMode');
-    const remarksEl = document.getElementById('newRemarks');
-    const addBeneficiaryEl = document.getElementById('addToBeneficiaries');
-    
-    const name = nameEl ? nameEl.value.trim() : '';
-    const accountNumber = accountEl ? accountEl.value.trim() : '';
-    const ifscCode = ifscEl ? ifscEl.value.trim() : '';
-    const bankName = bankEl ? bankEl.value.trim() : '';
-    const amount = amountEl ? parseFloat(amountEl.value) : 0;
-    const mode = modeEl ? modeEl.value : '';
-    const remarks = remarksEl ? remarksEl.value : '';
-    const addToBeneficiaries = addBeneficiaryEl ? addBeneficiaryEl.checked : false;
+    const name = document.getElementById('newBeneficiaryName').value.trim();
+    const accountNumber = document.getElementById('newAccountNumber').value.trim();
+    const ifscCode = document.getElementById('newIfscCode').value.trim();
+    const bankName = document.getElementById('newBankName').value.trim();
+    const amount = parseFloat(document.getElementById('newAmount').value);
+    const mode = document.getElementById('newTransferMode').value;
+    const remarks = document.getElementById('newRemarks').value;
+    const addToBeneficiaries = document.getElementById('addToBeneficiaries').checked;
     
     if (!name || !accountNumber || !ifscCode || !bankName || !amount || amount <= 0) {
         showNotification('Please fill all required fields', 'error');
@@ -1157,120 +996,78 @@ function handleNewTransfer(e) {
     
     const recipient = { name, accountNumber, ifscCode, bankName };
     
-    // Store transfer details
+    // Store transfer details for password verification
     pendingTransfer = {
         type: 'new',
-        amount,
-        recipient,
-        mode,
-        remarks,
-        addToBeneficiaries
+        amount: amount,
+        recipient: recipient,
+        mode: mode,
+        remarks: remarks,
+        addToBeneficiaries: addToBeneficiaries
     };
     
-    // Show transfer confirmation modal
-    showTransferConfirmation();
+    showTransferPasswordModal(amount, recipient, mode, remarks);
 }
 
-function showTransferConfirmation() {
-    if (!pendingTransfer) return;
-    
-    const summary = document.getElementById('transferSummary');
-    if (summary) {
-        summary.innerHTML = `
-            <div class="transfer-summary">
-                <h4>Transfer Details</h4>
-                <div class="summary-row">
-                    <span>To:</span>
-                    <span>${pendingTransfer.recipient.name}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Amount:</span>
-                    <span>${formatCurrency(pendingTransfer.amount)}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Mode:</span>
-                    <span>${pendingTransfer.mode}</span>
-                </div>
-                ${pendingTransfer.remarks ? `
-                <div class="summary-row">
-                    <span>Remarks:</span>
-                    <span>${pendingTransfer.remarks}</span>
-                </div>
-                ` : ''}
-            </div>
-        `;
-    }
-    
-    // Clear previous password
-    const passwordEl = document.getElementById('transferPassword');
-    if (passwordEl) passwordEl.value = '';
-    
-    // Clear any previous error
-    const errorEl = document.getElementById('transferPasswordError');
-    if (errorEl) errorEl.textContent = '';
+function showTransferPasswordModal(amount, recipient, mode, remarks) {
+    const detailsContainer = document.getElementById('transferDetails');
+    detailsContainer.innerHTML = `
+        <div class="transfer-detail-row">
+            <span class="transfer-detail-label">Recipient:</span>
+            <span class="transfer-detail-value">${recipient.name}</span>
+        </div>
+        <div class="transfer-detail-row">
+            <span class="transfer-detail-label">Amount:</span>
+            <span class="transfer-detail-value">${formatCurrency(amount)}</span>
+        </div>
+        <div class="transfer-detail-row">
+            <span class="transfer-detail-label">Mode:</span>
+            <span class="transfer-detail-value">${mode}</span>
+        </div>
+        ${remarks ? `<div class="transfer-detail-row">
+            <span class="transfer-detail-label">Remarks:</span>
+            <span class="transfer-detail-value">${remarks}</span>
+        </div>` : ''}
+    `;
     
     showModal('transferPasswordModal');
 }
 
-function confirmTransfer() {
-    const passwordEl = document.getElementById('transferPassword');
-    const password = passwordEl ? passwordEl.value.trim() : '';
+function handleTransferPasswordSubmit(e) {
+    e.preventDefault();
     
-    // Clear previous error
-    const errorEl = document.getElementById('transferPasswordError');
-    if (errorEl) errorEl.textContent = '';
+    const password = document.getElementById('transferPassword').value;
     
-    if (!password) {
-        if (errorEl) errorEl.textContent = 'Transfer password is required';
+    if (password !== 'mypassword123') {
+        showNotification('Invalid transfer password. Use: mypassword123', 'error');
         return;
     }
     
-    if (password !== LOGIN_CREDENTIALS.transferPassword) {
-        if (errorEl) errorEl.textContent = 'Invalid transfer password. Use mypassword123 for demo.';
-        return;
-    }
-    
-    // Hide modal and process transfer
     hideModal('transferPasswordModal');
-    processTransfer();
+    processTransfer(pendingTransfer);
 }
 
-function processTransfer() {
-    if (!pendingTransfer) return;
-    
+function processTransfer(transfer) {
     showLoading();
     
     setTimeout(() => {
         // Update balance
-        currentUser.availableBalance -= pendingTransfer.amount;
-        const balanceEl = document.getElementById('availableBalance');
-        if (balanceEl) balanceEl.textContent = formatCurrency(currentUser.availableBalance);
+        currentUser.availableBalance -= transfer.amount;
+        document.getElementById('availableBalance').textContent = formatCurrency(currentUser.availableBalance);
         
         // Add transaction record
         const newTransaction = {
             id: transactions.length + 1,
             date: new Date().toISOString().split('T')[0],
-            description: `Transfer to ${pendingTransfer.recipient.name}`,
+            description: `Transfer to ${transfer.recipient.name}`,
             type: 'Debit',
-            amount: -pendingTransfer.amount,
+            amount: -transfer.amount,
             balance: currentUser.availableBalance,
             reference: `TXN${Date.now()}`
         };
         
         transactions.unshift(newTransaction);
         filteredTransactions = [...transactions];
-        
-        // Add to beneficiaries if requested
-        if (pendingTransfer.type === 'new' && pendingTransfer.addToBeneficiaries) {
-            addNewBeneficiary({
-                name: pendingTransfer.recipient.name,
-                accountNumber: pendingTransfer.recipient.accountNumber,
-                ifscCode: pendingTransfer.recipient.ifscCode,
-                bankName: pendingTransfer.recipient.bankName,
-                branch: 'Unknown',
-                nickname: ''
-            });
-        }
         
         // Update displays
         populateRecentTransactions();
@@ -1279,77 +1076,67 @@ function processTransfer() {
         updateDashboardStats();
         
         // Reset forms
-        const existingForm = document.getElementById('existingTransferForm');
-        const newForm = document.getElementById('newTransferForm');
-        if (existingForm) existingForm.reset();
-        if (newForm) newForm.reset();
+        document.getElementById('existingTransferForm').reset();
+        document.getElementById('newTransferForm').reset();
+        document.getElementById('transferPassword').value = '';
+        
+        // Add to beneficiaries if requested
+        if (transfer.addToBeneficiaries && transfer.type === 'new') {
+            addNewBeneficiary({
+                name: transfer.recipient.name,
+                accountNumber: transfer.recipient.accountNumber,
+                ifscCode: transfer.recipient.ifscCode,
+                bankName: transfer.recipient.bankName,
+                branch: 'Unknown',
+                nickname: ''
+            });
+        }
         
         hideLoading();
-        
-        // Show success page
-        showSuccessPage();
+        showSuccessPage(transfer);
     }, 2000);
 }
 
-function showSuccessPage() {
-    if (!pendingTransfer) return;
-    
+function showSuccessPage(transfer) {
     const successDetails = document.getElementById('successDetails');
-    if (successDetails) {
-        successDetails.innerHTML = `
-            <div class="detail-row">
-                <span class="detail-label">Transfer Amount:</span>
-                <span class="detail-value">${formatCurrency(pendingTransfer.amount)}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">To:</span>
-                <span class="detail-value">${pendingTransfer.recipient.name}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Account Number:</span>
-                <span class="detail-value">****${pendingTransfer.recipient.accountNumber.slice(-4)}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Transfer Mode:</span>
-                <span class="detail-value">${pendingTransfer.mode}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Reference Number:</span>
-                <span class="detail-value">TXN${Date.now()}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Status:</span>
-                <span class="status status--success">Completed</span>
-            </div>
-        `;
-    }
-    
-    // Setup success page action buttons
-    document.querySelectorAll('.success-actions [data-page]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const page = e.currentTarget.getAttribute('data-page');
-            navigateToPage(page);
-        });
-    });
+    successDetails.innerHTML = `
+        <div class="success-detail-row">
+            <span class="success-detail-label">Transaction Reference:</span>
+            <span class="success-detail-value">TXN${Date.now()}</span>
+        </div>
+        <div class="success-detail-row">
+            <span class="success-detail-label">Recipient:</span>
+            <span class="success-detail-value">${transfer.recipient.name}</span>
+        </div>
+        <div class="success-detail-row">
+            <span class="success-detail-label">Amount:</span>
+            <span class="success-detail-value">${formatCurrency(transfer.amount)}</span>
+        </div>
+        <div class="success-detail-row">
+            <span class="success-detail-label">Mode:</span>
+            <span class="success-detail-value">${transfer.mode}</span>
+        </div>
+        <div class="success-detail-row">
+            <span class="success-detail-label">Date:</span>
+            <span class="success-detail-value">${formatDate(new Date().toISOString().split('T')[0])}</span>
+        </div>
+    `;
     
     navigateToPage('success');
-    
-    // Clear pending transfer
-    pendingTransfer = null;
+    showNotification('Transfer completed successfully!', 'success');
 }
 
 // Beneficiaries Functions
 function setupBeneficiariesEventListeners() {
-    const addBtn = document.getElementById('addBeneficiaryBtn');
-    const beneficiaryForm = document.getElementById('beneficiaryForm');
+    document.getElementById('addBeneficiaryBtn').addEventListener('click', () => {
+        openBeneficiaryModal();
+    });
     
-    if (addBtn) addBtn.addEventListener('click', () => openBeneficiaryModal());
-    if (beneficiaryForm) beneficiaryForm.addEventListener('submit', saveBeneficiary);
+    document.getElementById('beneficiaryForm').addEventListener('submit', saveBeneficiary);
 }
 
 function renderBeneficiaries() {
     const grid = document.getElementById('beneficiariesGrid');
-    if (!grid) return;
     
     if (beneficiaries.length === 0) {
         grid.innerHTML = '<p>No beneficiaries found. Add your first beneficiary to get started.</p>';
@@ -1364,12 +1151,8 @@ function renderBeneficiaries() {
                     <p class="beneficiary-nickname">${beneficiary.nickname || 'No nickname'}</p>
                 </div>
                 <div class="beneficiary-actions">
-                    <button class="icon-btn" onclick="editBeneficiary(${beneficiary.id})" title="Edit">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="icon-btn" onclick="deleteBeneficiary(${beneficiary.id})" title="Delete">
-                        <i class="bi bi-trash"></i>
-                    </button>
+                    <button class="icon-btn" onclick="editBeneficiary(${beneficiary.id})" title="Edit">✏️</button>
+                    <button class="icon-btn" onclick="deleteBeneficiary(${beneficiary.id})" title="Delete">🗑️</button>
                 </div>
             </div>
             <div class="beneficiary-details">
@@ -1399,49 +1182,19 @@ function openBeneficiaryModal(beneficiary = null) {
     const title = document.getElementById('beneficiaryModalTitle');
     const form = document.getElementById('beneficiaryForm');
     
-    if (!modal || !form) return;
-    
     if (beneficiary) {
-        if (title) title.textContent = 'Edit Beneficiary';
-        
-        const fields = [
-            'beneficiaryId', 'beneficiaryName', 'beneficiaryNickname', 
-            'beneficiaryAccount', 'beneficiaryIfsc', 'beneficiaryBank', 'beneficiaryBranch'
-        ];
-        
-        fields.forEach(fieldId => {
-            const element = document.getElementById(fieldId);
-            if (element) {
-                switch(fieldId) {
-                    case 'beneficiaryId':
-                        element.value = beneficiary.id;
-                        break;
-                    case 'beneficiaryName':
-                        element.value = beneficiary.name;
-                        break;
-                    case 'beneficiaryNickname':
-                        element.value = beneficiary.nickname || '';
-                        break;
-                    case 'beneficiaryAccount':
-                        element.value = beneficiary.accountNumber;
-                        break;
-                    case 'beneficiaryIfsc':
-                        element.value = beneficiary.ifscCode;
-                        break;
-                    case 'beneficiaryBank':
-                        element.value = beneficiary.bankName;
-                        break;
-                    case 'beneficiaryBranch':
-                        element.value = beneficiary.branch;
-                        break;
-                }
-            }
-        });
+        title.textContent = 'Edit Beneficiary';
+        document.getElementById('beneficiaryId').value = beneficiary.id;
+        document.getElementById('beneficiaryName').value = beneficiary.name;
+        document.getElementById('beneficiaryNickname').value = beneficiary.nickname || '';
+        document.getElementById('beneficiaryAccount').value = beneficiary.accountNumber;
+        document.getElementById('beneficiaryIfsc').value = beneficiary.ifscCode;
+        document.getElementById('beneficiaryBank').value = beneficiary.bankName;
+        document.getElementById('beneficiaryBranch').value = beneficiary.branch;
     } else {
-        if (title) title.textContent = 'Add New Beneficiary';
+        title.textContent = 'Add New Beneficiary';
         form.reset();
-        const idField = document.getElementById('beneficiaryId');
-        if (idField) idField.value = '';
+        document.getElementById('beneficiaryId').value = '';
     }
     
     showModal('beneficiaryModal');
@@ -1474,28 +1227,15 @@ function deleteBeneficiary(id) {
 function saveBeneficiary(e) {
     e.preventDefault();
     
-    const fields = {
-        id: document.getElementById('beneficiaryId'),
-        name: document.getElementById('beneficiaryName'),
-        nickname: document.getElementById('beneficiaryNickname'),
-        accountNumber: document.getElementById('beneficiaryAccount'),
-        ifscCode: document.getElementById('beneficiaryIfsc'),
-        bankName: document.getElementById('beneficiaryBank'),
-        branch: document.getElementById('beneficiaryBranch')
-    };
+    const id = document.getElementById('beneficiaryId').value;
+    const name = document.getElementById('beneficiaryName').value.trim();
+    const nickname = document.getElementById('beneficiaryNickname').value.trim();
+    const accountNumber = document.getElementById('beneficiaryAccount').value.trim();
+    const ifscCode = document.getElementById('beneficiaryIfsc').value.trim();
+    const bankName = document.getElementById('beneficiaryBank').value.trim();
+    const branch = document.getElementById('beneficiaryBranch').value.trim();
     
-    const values = {};
-    let hasError = false;
-    
-    Object.keys(fields).forEach(key => {
-        if (fields[key]) {
-            values[key] = fields[key].value.trim();
-        } else {
-            hasError = true;
-        }
-    });
-    
-    if (hasError || !values.name || !values.accountNumber || !values.ifscCode || !values.bankName || !values.branch) {
+    if (!name || !accountNumber || !ifscCode || !bankName || !branch) {
         showNotification('Please fill all required fields', 'error');
         return;
     }
@@ -1503,30 +1243,22 @@ function saveBeneficiary(e) {
     showLoading();
     
     setTimeout(() => {
-        if (values.id) {
+        if (id) {
             // Edit existing beneficiary
-            const index = beneficiaries.findIndex(b => b.id == values.id);
+            const index = beneficiaries.findIndex(b => b.id == id);
             if (index !== -1) {
-                beneficiaries[index] = {
-                    ...beneficiaries[index],
-                    name: values.name,
-                    nickname: values.nickname,
-                    accountNumber: values.accountNumber,
-                    ifscCode: values.ifscCode,
-                    bankName: values.bankName,
-                    branch: values.branch
-                };
+                beneficiaries[index] = { ...beneficiaries[index], name, nickname, accountNumber, ifscCode, bankName, branch };
             }
         } else {
             // Add new beneficiary
             const newBeneficiary = {
                 id: Math.max(...beneficiaries.map(b => b.id), 0) + 1,
-                name: values.name,
-                nickname: values.nickname,
-                accountNumber: values.accountNumber,
-                ifscCode: values.ifscCode,
-                bankName: values.bankName,
-                branch: values.branch
+                name,
+                nickname,
+                accountNumber,
+                ifscCode,
+                bankName,
+                branch
             };
             beneficiaries.push(newBeneficiary);
         }
@@ -1537,7 +1269,7 @@ function saveBeneficiary(e) {
         hideModal('beneficiaryModal');
         hideLoading();
         
-        showNotification(`Beneficiary ${values.id ? 'updated' : 'added'} successfully!`, 'success');
+        showNotification(`Beneficiary ${id ? 'updated' : 'added'} successfully!`, 'success');
     }, 1000);
 }
 
@@ -1561,7 +1293,7 @@ function setupModalEventListeners() {
     document.querySelectorAll('.modal-close').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const modal = e.currentTarget.closest('.modal');
-            if (modal) hideModal(modal.id);
+            hideModal(modal.id);
         });
     });
     
@@ -1575,52 +1307,40 @@ function setupModalEventListeners() {
     });
     
     // Change password form
-    const changePasswordForm = document.getElementById('changePasswordForm');
-    if (changePasswordForm) {
-        changePasswordForm.addEventListener('submit', handleChangePassword);
-    }
+    document.getElementById('changePasswordForm').addEventListener('submit', handleChangePassword);
 }
 
 function showModal(modalId) {
     const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('hidden');
-        
-        // Focus first input
-        const firstInput = modal.querySelector('input:not([type="hidden"])');
-        if (firstInput) {
-            setTimeout(() => firstInput.focus(), 100);
-        }
+    modal.classList.remove('hidden');
+    
+    // Focus first input
+    const firstInput = modal.querySelector('input:not([type="hidden"])');
+    if (firstInput) {
+        setTimeout(() => firstInput.focus(), 100);
     }
 }
 
 function hideModal(modalId) {
     const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        
-        // Reset form if it exists
-        const form = modal.querySelector('form');
-        if (form) {
-            form.reset();
-        }
+    modal.classList.add('hidden');
+    
+    // Reset form if it exists
+    const form = modal.querySelector('form');
+    if (form) {
+        form.reset();
     }
 }
 
 function showConfirmation(title, message, onConfirm) {
-    const titleEl = document.getElementById('confirmationTitle');
-    const messageEl = document.getElementById('confirmationMessage');
+    document.getElementById('confirmationTitle').textContent = title;
+    document.getElementById('confirmationMessage').textContent = message;
+    
     const confirmBtn = document.getElementById('confirmActionBtn');
-    
-    if (titleEl) titleEl.textContent = title;
-    if (messageEl) messageEl.textContent = message;
-    
-    if (confirmBtn) {
-        confirmBtn.onclick = () => {
-            onConfirm();
-            hideModal('confirmationModal');
-        };
-    }
+    confirmBtn.onclick = () => {
+        onConfirm();
+        hideModal('confirmationModal');
+    };
     
     showModal('confirmationModal');
 }
@@ -1628,13 +1348,9 @@ function showConfirmation(title, message, onConfirm) {
 function handleChangePassword(e) {
     e.preventDefault();
     
-    const currentPasswordEl = document.getElementById('currentPassword');
-    const newPasswordEl = document.getElementById('newPassword');
-    const confirmPasswordEl = document.getElementById('confirmPassword');
-    
-    const currentPassword = currentPasswordEl ? currentPasswordEl.value : '';
-    const newPassword = newPasswordEl ? newPasswordEl.value : '';
-    const confirmPassword = confirmPasswordEl ? confirmPasswordEl.value : '';
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
     
     if (newPassword !== confirmPassword) {
         showNotification('New passwords do not match', 'error');
@@ -1658,8 +1374,6 @@ function handleChangePassword(e) {
 // Utility Functions
 function populateRecentTransactions() {
     const container = document.getElementById('recentTransactionsList');
-    if (!container) return;
-    
     const recentTransactions = transactions.slice(0, 5);
     
     container.innerHTML = recentTransactions.map(transaction => `
@@ -1696,30 +1410,26 @@ function showNotification(message, type = 'info') {
     const notification = document.getElementById('notification');
     const messageElement = document.getElementById('notificationMessage');
     
-    if (notification && messageElement) {
-        messageElement.textContent = message;
-        notification.className = `notification ${type}`;
-        notification.classList.remove('hidden');
-        
-        setTimeout(() => {
-            notification.classList.add('hidden');
-        }, 4000);
-    }
+    messageElement.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.classList.remove('hidden');
+    
+    setTimeout(() => {
+        notification.classList.add('hidden');
+    }, 4000);
 }
 
 function showLoading() {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) overlay.classList.remove('hidden');
+    document.getElementById('loadingOverlay').classList.remove('hidden');
 }
 
 function hideLoading() {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) overlay.classList.add('hidden');
+    document.getElementById('loadingOverlay').classList.add('hidden');
 }
 
 function showFieldError(fieldId, message) {
     const errorElement = document.getElementById(fieldId);
-    if (errorElement) errorElement.textContent = message;
+    errorElement.textContent = message;
 }
 
 function clearFormErrors() {
