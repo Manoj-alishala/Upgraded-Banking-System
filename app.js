@@ -74,10 +74,10 @@ function loadMockData() {
         {
             id: 2,
             name: "Manoj",
-            accountNumber: "5678901234567890",
-            ifscCode: "SBI00009876",
-            bankName: "State Bank of India",
-            branch: "Ahmedabad Branch",
+            accountNumber: "5678901234566002",
+            ifscCode: "HDFC0000375",
+            bankName: "HDFC",
+            branch: "Warangal Branch",
             nickname: "Business Partner"
         },
         {
@@ -91,6 +91,15 @@ function loadMockData() {
         },
         {
             id: 4,
+            name: "Thrushitha",
+            accountNumber: "8734878363673344",
+            ifscCode: "SBIK000222",
+            bankName: "State Bank of India",
+            branch: "Chennai Branch",
+            nickname: "Colleague"
+        },
+        {
+            id: 5,
             name: "Sai Suraj",
             accountNumber: "7890123456789012",
             ifscCode: "KOTAK000222",
@@ -101,7 +110,7 @@ function loadMockData() {
     ];
 
     // Load transactions - using the exact data provided
-    transactions = [
+    const transactions = [
         {
             id: 1,
             date: "2025-10-06",
@@ -146,8 +155,270 @@ function loadMockData() {
             amount: 425.75,
             balance: 394598.50,
             reference: "INT202510020001"
+        },
+        // September
+        {
+            id: 6,
+            date: "2025-09-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: 394172.75,
+            reference: "SAL202509060001"
+        },
+        {
+            id: 7,
+            date: "2025-09-05",
+            description: "Electricity Bill Payment",
+            type: "Debit",
+            amount: -1780,
+            balance: 309172.75,
+            reference: "UPI202509050877"
+        },
+        {
+            id: 8,
+            date: "2025-09-03",
+            description: "UPI Payment - Swiggy",
+            type: "Debit",
+            amount: -546,
+            balance: 310952.75,
+            reference: "UPI202509030322"
+        },
+        {
+            id: 9,
+            date: "2025-09-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 398.25,
+            balance: 311498.75,
+            reference: "INT202509020001"
+        },
+        // August
+        {
+            id: 10,
+            date: "2025-08-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: 311100.50,
+            reference: "SAL202508060001"
+        },
+        {
+            id: 11,
+            date: "2025-08-04",
+            description: "UPI Payment - Flipkart",
+            type: "Debit",
+            amount: -2200,
+            balance: 226100.50,
+            reference: "UPI202508040543"
+        },
+        {
+            id: 12,
+            date: "2025-08-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 410.30,
+            balance: 228300.50,
+            reference: "INT202508020001"
+        },
+        // July
+        {
+            id: 13,
+            date: "2025-07-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: 227890.20,
+            reference: "SAL202507060001"
+        },
+        {
+            id: 14,
+            date: "2025-07-04",
+            description: "UPI Payment - Zomato",
+            type: "Debit",
+            amount: -790,
+            balance: 142890.20,
+            reference: "UPI202507040654"
+        },
+        {
+            id: 15,
+            date: "2025-07-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 405.50,
+            balance: 143680.20,
+            reference: "INT202507020001"
+        },
+        // June
+        {
+            id: 16,
+            date: "2025-06-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: 143274.70,
+            reference: "SAL202506060001"
+        },
+        {
+            id: 17,
+            date: "2025-06-04",
+            description: "UPI Payment - BigBasket",
+            type: "Debit",
+            amount: -1350,
+            balance: 58274.70,
+            reference: "UPI202506040902"
+        },
+        {
+            id: 18,
+            date: "2025-06-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 392.80,
+            balance: 59624.70,
+            reference: "INT202506020001"
+        },
+        // May
+        {
+            id: 19,
+            date: "2025-05-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: 59231.90,
+            reference: "SAL202505060001"
+        },
+        {
+            id: 20,
+            date: "2025-05-04",
+            description: "UPI Payment - Myntra",
+            type: "Debit",
+            amount: -2500,
+            balance: -25768.10,
+            reference: "UPI202505040211"
+        },
+        {
+            id: 21,
+            date: "2025-05-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 405.10,
+            balance: -23268.10,
+            reference: "INT202505020001"
+        },
+        // April
+        {
+            id: 22,
+            date: "2025-04-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: -23673.20,
+            reference: "SAL202504060001"
+        },
+        {
+            id: 23,
+            date: "2025-04-04",
+            description: "Transfer to Friend",
+            type: "Debit",
+            amount: -5000,
+            balance: -108673.20,
+            reference: "TXN202504040987"
+        },
+        {
+            id: 24,
+            date: "2025-04-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 390.60,
+            balance: -108282.60,
+            reference: "INT202504020001"
+        },
+        // March
+        {
+            id: 25,
+            date: "2025-03-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: -108673.20,
+            reference: "SAL202503060001"
+        },
+        {
+            id: 26,
+            date: "2025-03-05",
+            description: "UPI Payment - Netflix",
+            type: "Debit",
+            amount: -699,
+            balance: -193673.20,
+            reference: "UPI202503050431"
+        },
+        {
+            id: 27,
+            date: "2025-03-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 377.85,
+            balance: -192973.20,
+            reference: "INT202503020001"
+        },
+        // February
+        {
+            id: 28,
+            date: "2025-02-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: -193351.05,
+            reference: "SAL202502060001"
+        },
+        {
+            id: 29,
+            date: "2025-02-04",
+            description: "UPI Payment - Amazon",
+            type: "Debit",
+            amount: -1599,
+            balance: -278351.05,
+            reference: "UPI202502040213"
+        },
+        {
+            id: 30,
+            date: "2025-02-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 368.75,
+            balance: -276752.30,
+            reference: "INT202502020001"
+        },
+        // January
+        {
+            id: 31,
+            date: "2025-01-06",
+            description: "Salary Credit",
+            type: "Credit",
+            amount: 85000,
+            balance: -277121.05,
+            reference: "SAL202501060001"
+        },
+        {
+            id: 32,
+            date: "2025-01-05",
+            description: "UPI Payment - Paytm Recharge",
+            type: "Debit",
+            amount: -249,
+            balance: -362121.05,
+            reference: "UPI202501050732"
+        },
+        {
+            id: 33,
+            date: "2025-01-02",
+            description: "Interest Credit",
+            type: "Credit",
+            amount: 350.40,
+            balance: -361871.05,
+            reference: "INT202501020001"
         }
     ];
+
 
     filteredTransactions = [...transactions];
     
